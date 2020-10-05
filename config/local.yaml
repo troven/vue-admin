@@ -1,0 +1,85 @@
+name: vue-admin-apis
+port: 5010
+process_guard: false
+
+logging:
+  File:
+    enabled: false
+    filename: 'api-services.log'
+  Console:
+    enabled: true
+
+features:
+  cors:
+    origin: "*"
+    enabled: true
+
+  payload:
+    enabled: true
+
+  prometheus:
+    enabled: true
+
+  jwt:
+    secret: false
+    debug: true
+    keycloakURL: https://login.perci-io.net/auth/realms/amplify-dev/protocol/openid-connect/certs
+
+  pipeline:
+    enabled: true
+    before:
+    after:
+
+  configs:
+    uis:
+      crd: true
+      folder: "./specs/uis"
+      every: 5
+      config:
+        features:
+        - basic
+        - advanced
+        - premium
+        settings:
+          title: Amplify Admin [Local]
+          showSettings: false
+          tagsView: true
+          fixedHeader: true
+          logo: "/logo.png"
+          errorLog:
+          - production
+          - development
+          public_routes:
+          - "/login"
+          - "/auth-redirect"
+          baseURL: https://api.sit.amplifyonline.csi.edu.au/api/
+        routes:
+          - $ref: home-ui
+    apis:
+      crd: true
+      folder: "./specs/apis"
+
+  openapi:
+    enabled: true
+    info:
+      title: "Local Admin APIs"
+      version: 0.0.0
+    paths:
+      /ui:
+        get:
+          summary: UI Definition
+          feature:
+            ui.config:
+              enable: true
+          responses:
+            '200':
+              description: 200 response
+              content:
+                application/json: {}
+    components:
+      securitySchemes:
+        oauth2_jwt:
+          type: http
+          scheme: bearer
+          description: JWT bearer key to authorize requests.
+          bearerFormat: JWT
